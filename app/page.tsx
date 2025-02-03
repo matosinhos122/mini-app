@@ -1,30 +1,26 @@
-"use client"
+import type { Metadata } from "next"
+import ChatInterface from "@/components/ChatInterface"
 
-import { useState } from "react"
-import OnboardingForm from "@/components/OnboardingForm"
-import LoadingAnimation from "@/components/LoadingAnimation"
-import CompletionScreen from "@/components/CompletionScreen"
+export const metadata: Metadata = {
+  title: "Your Personal AI Agent",
+  description: "Chat with your personalized AI agent",
+}
 
-export default function Home() {
-  const [step, setStep] = useState("form")
-  const [formData, setFormData] = useState({})
-
-  const handleFormSubmit = (data) => {
-    setFormData(data)
-    setStep("loading")
-    // Simulate LLM processing
-    setTimeout(() => {
-      setStep("complete")
-    }, 5000)
-  }
-
+export default function Page() {
   return (
-    <main className="container mx-auto p-4 max-w-md">
-      <h1 className="text-3xl font-bold mb-6 text-center">AI Agent Onboarding</h1>
-      {step === "form" && <OnboardingForm onSubmit={handleFormSubmit} />}
-      {step === "loading" && <LoadingAnimation />}
-      {step === "complete" && <CompletionScreen />}
-    </main>
+    <div className="min-h-screen bg-gray-50">
+      <header className="fixed top-0 left-0 right-0 border-b bg-white z-10">
+        <div className="container mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="font-semibold">Your AI Agent</div>
+          <a href="/login" className="text-blue-600 hover:text-blue-700 text-sm">
+            Login / Signup
+          </a>
+        </div>
+      </header>
+      <main className="pt-14 pb-20 min-h-screen">
+        <ChatInterface />
+      </main>
+    </div>
   )
 }
 

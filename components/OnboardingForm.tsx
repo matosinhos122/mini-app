@@ -2,98 +2,64 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Textarea } from "@/components/ui/textarea"
+import { Twitter, Linkedin, Facebook, Mail, MessageCircle } from "lucide-react"
 
 export default function OnboardingForm({ onSubmit }) {
-  const [formData, setFormData] = useState({
-    twitter: "",
-    linkedin: "",
-    facebook: "",
-    gmail: "",
-    messageApiKey: "",
+  const [connectedAccounts, setConnectedAccounts] = useState({
+    twitter: false,
+    linkedin: false,
+    facebook: false,
+    gmail: false,
+    messages: false,
   })
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+  const handleConnect = (account) => {
+    // Here you would typically initiate the OAuth flow for the selected account
+    // For this example, we'll just toggle the connection state
+    setConnectedAccounts((prev) => ({ ...prev, [account]: !prev[account] }))
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    onSubmit(formData)
+    onSubmit(connectedAccounts)
   }
+
+  const accountButtons = [
+    { name: "twitter", icon: Twitter },
+    { name: "linkedin", icon: Linkedin },
+    { name: "facebook", icon: Facebook },
+    { name: "gmail", icon: Mail },
+    { name: "messages", icon: MessageCircle },
+  ]
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Connect Your Accounts</CardTitle>
-        <CardDescription>
-          Provide your social media, communication accounts, and message API key to personalize your AI Agent.
-        </CardDescription>
+        <CardDescription>Click on the icons to connect your accounts and personalize your AI Agent.</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="twitter">Twitter Profile</Label>
-            <Input
-              id="twitter"
-              name="twitter"
-              placeholder="@username"
-              value={formData.twitter}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="linkedin">LinkedIn Profile</Label>
-            <Input
-              id="linkedin"
-              name="linkedin"
-              placeholder="linkedin.com/in/username"
-              value={formData.linkedin}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="facebook">Facebook Profile</Label>
-            <Input
-              id="facebook"
-              name="facebook"
-              placeholder="facebook.com/username"
-              value={formData.facebook}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="gmail">Gmail Address</Label>
-            <Input
-              id="gmail"
-              name="gmail"
-              type="email"
-              placeholder="you@gmail.com"
-              value={formData.gmail}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="messageApiKey">Message API Key</Label>
-            <Textarea
-              id="messageApiKey"
-              name="messageApiKey"
-              placeholder="Enter your API key or authorization token for accessing messages"
-              value={formData.messageApiKey}
-              onChange={handleChange}
-            />
-            <p className="text-sm text-gray-500">
-              This key should provide authorized access to your messaging data. Please ensure you have the necessary
-              permissions.
-            </p>
-          </div>
-        </form>
+        <div className="flex justify-center space-x-4 mb-6">
+          {accountButtons.map(({ name, icon: Icon }) => (
+            <Button
+              key={name}
+              onClick={() => handleConnect(name)}
+              variant={connectedAccounts[name] ? "default" : "outline"}
+              size="icon"
+              className="w-12 h-12"
+            >
+              <Icon className="h-6 w-6" />
+              <span className="sr-only">Connect {name}</span>
+            </Button>
+          ))}
+        </div>
+        <div className="text-center text-sm text-gray-500">
+          {Object.entries(connectedAccounts).filter(([_, v]) => v).length} of {accountButtons.length} accounts connected
+        </div>
       </CardContent>
       <CardFooter>
-        <Button type="submit" className="w-full" onClick={handleSubmit}>
+        <Button onClick={handleSubmit} className="w-full">
           Create My AI Agent
         </Button>
       </CardFooter>
